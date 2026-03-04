@@ -1,0 +1,26 @@
+name: Daily Wrestling Data Update
+
+on:
+  schedule:
+    - cron: '0 11 * * *'  # 6am ET (UTC-5) = 11am UTC
+  workflow_dispatch:       # Allow manual trigger from GitHub UI
+
+jobs:
+  scrape-and-analyze:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install @supabase/supabase-js node-fetch
+
+      - name: Scrape news and trigger AI analysis
+        run: node scripts/scrape.js
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          SUPABASE_FUNCTION_URL: ${{ secrets.SUPABASE_FUNCTION_URL }}
