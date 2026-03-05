@@ -185,32 +185,53 @@ const TEAM_CONSENSUS = TEAM_DATA.map(t => {
   return { ...t, consensusScore: avg };
 }).sort((a, b) => a.consensusScore - b.consensusScore).map((t, i) => ({ ...t, consensusRank: i + 1 }));
 
-// Matches — real 2025-26 matchups
+// Matches — confirmed real results only. Speculative matchups are removed.
+// Add real bracket matchups here as brackets are officially released.
 const MATCHES = [
-  // Completed results
   {id:"r1",wt:165,date:"Feb 21",ev:"Penn State vs Ohio State",w1:{n:"Mitchell Mesenbrink",t:"Penn State",rk:1},w2:{n:"Dylan Fishback",t:"Ohio State",rk:6},done:true,result:{winner:"Mitchell Mesenbrink",method:"Dec, 8-7",upset:false}},
   {id:"r2",wt:184,date:"Feb 21",ev:"Penn State vs Ohio State",w1:{n:"Rocco Welsh",t:"Penn State",rk:1},w2:{n:"Dylan Fishback",t:"Ohio State",rk:6},done:true,result:{winner:"Rocco Welsh",method:"Dec, 8-7",upset:false}},
   {id:"r3",wt:165,date:"Feb 14",ev:"Iowa vs Oklahoma State",w1:{n:"Mikey Caliendo",t:"Iowa",rk:3},w2:{n:"Ladarion Lockett",t:"Oklahoma State",rk:2},done:true,result:{winner:"Mikey Caliendo",method:"Dec, 5-3",upset:true}},
   {id:"r4",wt:197,date:"Feb 14",ev:"Iowa State vs Oklahoma State",w1:{n:"Rocky Elam",t:"Iowa State",rk:2},w2:{n:"Cody Merrill",t:"Oklahoma State",rk:7},done:true,result:{winner:"Rocky Elam",method:"Major Dec, 14-3",upset:false}},
   {id:"r5",wt:141,date:"Feb 7",ev:"Ohio State vs Penn State",w1:{n:"Jesse Mendez",t:"Ohio State",rk:1},w2:{n:"Aaron Nagao",t:"Penn State",rk:9},done:true,result:{winner:"Jesse Mendez",method:"Tech Fall, 18-2",upset:false}},
-  // Conference tournaments
-  {id:"m1",wt:125,date:"Mar 8",ev:"Big Ten Championships — Final",w1:{n:"Luke Lilledahl",t:"Penn State",rk:2},w2:{n:"Nic Bouzakis",t:"Ohio State",rk:3},done:false},
-  {id:"m2",wt:133,date:"Mar 8",ev:"Big Ten Championships — SF",w1:{n:"Lucas Byrd",t:"Illinois",rk:1},w2:{n:"Drake Ayala",t:"Iowa",rk:4},done:false},
-  {id:"m3",wt:141,date:"Mar 8",ev:"Big Ten Championships — Final",w1:{n:"Jesse Mendez",t:"Ohio State",rk:1},w2:{n:"Brock Hardy",t:"Nebraska",rk:3},done:false},
-  {id:"m4",wt:165,date:"Mar 8",ev:"Big Ten Championships — Final",w1:{n:"Mitchell Mesenbrink",t:"Penn State",rk:1},w2:{n:"Mikey Caliendo",t:"Iowa",rk:2},done:false},
-  {id:"m5",wt:174,date:"Mar 8",ev:"Big Ten Championships — SF",w1:{n:"Levi Haines",t:"Penn State",rk:1},w2:{n:"Patrick Kennedy",t:"Iowa",rk:3},done:false},
-  {id:"m6",wt:285,date:"Mar 8",ev:"Big 12 Championships — Final",w1:{n:"Yonger Bastida",t:"Iowa State",rk:1},w2:{n:"Konner Doucet",t:"Oklahoma State",rk:7},done:false},
-  // NCAA Championship matchups (Mar 19-21, Cleveland)
-  {id:"n1",wt:125,date:"Mar 20",ev:"NCAA QF",w1:{n:"Vincent Robinson",t:"NC State",rk:1},w2:{n:"Dean Peterson",t:"Iowa",rk:6},done:false,addedAt:new Date("2026-03-04").getTime()},
-  {id:"n2",wt:125,date:"Mar 21",ev:"NCAA SF",w1:{n:"Vincent Robinson",t:"NC State",rk:1},w2:{n:"Nic Bouzakis",t:"Ohio State",rk:3},done:false,addedAt:new Date("2026-03-04").getTime()},
-  {id:"n3",wt:141,date:"Mar 20",ev:"NCAA QF",w1:{n:"Jesse Mendez",t:"Ohio State",rk:1},w2:{n:"Joey Olivieri",t:"Rutgers",rk:5},done:false,addedAt:new Date("2026-03-04").getTime()},
-  {id:"n4",wt:165,date:"Mar 21",ev:"NCAA Final",w1:{n:"Mitchell Mesenbrink",t:"Penn State",rk:1},w2:{n:"Joey Blaze",t:"Purdue",rk:3},done:false,addedAt:new Date("2026-03-04").getTime()},
-  {id:"n5",wt:174,date:"Mar 21",ev:"NCAA SF",w1:{n:"Levi Haines",t:"Penn State",rk:1},w2:{n:"Simon Ruiz",t:"Cornell",rk:2},done:false,addedAt:new Date("2026-03-04").getTime()},
-  {id:"n6",wt:184,date:"Mar 21",ev:"NCAA Final",w1:{n:"Rocco Welsh",t:"Penn State",rk:1},w2:{n:"Angelo Ferrari",t:"Iowa",rk:2},done:false,addedAt:new Date("2026-03-04").getTime()},
-  {id:"n7",wt:197,date:"Mar 21",ev:"NCAA Final",w1:{n:"Josh Barr",t:"Penn State",rk:1},w2:{n:"Rocky Elam",t:"Iowa State",rk:2},done:false,addedAt:new Date("2026-03-04").getTime()},
-  {id:"n8",wt:285,date:"Mar 21",ev:"NCAA SF",w1:{n:"Yonger Bastida",t:"Iowa State",rk:1},w2:{n:"Nick Felman",t:"Ohio State",rk:3},done:false,addedAt:new Date("2026-03-04").getTime()},
-  {id:"n9",wt:133,date:"Mar 20",ev:"NCAA QF",w1:{n:"Lucas Byrd",t:"Illinois",rk:1},w2:{n:"Kyler Larkin",t:"Arizona State",rk:6},done:false,addedAt:new Date("2026-03-04").getTime()},
-  {id:"n10",wt:149,date:"Mar 21",ev:"NCAA SF",w1:{n:"Shayne Van Ness",t:"Penn State",rk:1},w2:{n:"Meyer Shapiro",t:"Cornell",rk:2},done:false,addedAt:new Date("2026-03-04").getTime()},
+];
+
+// Upcoming tournaments — bracket matchups added here once officially released
+const TOURNAMENTS = [
+  {
+    id:"bt", name:"Big Ten Championships", shortName:"Big Ten",
+    date:"Mar 7-8", lockDate: new Date(2026,2,7,9,0,0),
+    location:"Target Center, Minneapolis, MN",
+    status:"brackets_pending", // brackets_pending | live | completed
+    teams:["Penn State","Ohio State","Iowa","Michigan","Nebraska","Minnesota","Wisconsin","Illinois","Rutgers","Michigan State","Northwestern","Indiana","Maryland","Purdue"],
+  },
+  {
+    id:"b12", name:"Big 12 Championships", shortName:"Big 12",
+    date:"Mar 7-8", lockDate: new Date(2026,2,7,9,0,0),
+    location:"BOK Center, Tulsa, OK",
+    status:"brackets_pending",
+    teams:["Iowa State","Oklahoma State","Oklahoma","Missouri","West Virginia","Northern Iowa","Arizona State","Air Force","Utah Valley","Cal Baptist","North Dakota State","South Dakota State"],
+  },
+  {
+    id:"acc", name:"ACC Championships", shortName:"ACC",
+    date:"Mar 7-8", lockDate: new Date(2026,2,7,9,0,0),
+    location:"PPG Paints Arena, Pittsburgh, PA",
+    status:"brackets_pending",
+    teams:["Virginia Tech","NC State","Pittsburgh","Duke","Notre Dame","Virginia","Florida State","Clemson"],
+  },
+  {
+    id:"eiwa", name:"EIWA Championships", shortName:"EIWA",
+    date:"Mar 7-8", lockDate: new Date(2026,2,7,9,0,0),
+    location:"Newman Arena, Ithaca, NY",
+    status:"brackets_pending",
+    teams:["Cornell","Princeton","Penn","Lehigh","Army","Navy","Drexel","Columbia","Harvard","Brown"],
+  },
+  {
+    id:"ncaa", name:"NCAA Championships", shortName:"NCAA",
+    date:"Mar 19-21", lockDate: new Date(2026,2,19,9,0,0),
+    location:"Rocket Arena, Cleveland, OH",
+    status:"brackets_pending",
+    teams:[], // Filled after conference tournaments qualify teams
+  },
 ];
 
 // Lock times: predictions freeze at 10am ET on match day
@@ -493,8 +514,10 @@ export default function App() {
   const [mvotes, setMvotes] = useState({});
   const [suggested, setSuggested] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [myPicks, setMyPicks] = useState({});       // { [wc]: wrestlerName } — per logged-in user
-  const [myMatchPicks, setMyMatchPicks] = useState({}); // { [matchId]: wrestlerName } — per logged-in user
+  const [myPicks, setMyPicks] = useState({});        // { [wc]: wrestlerName } — per user
+  const [myMatchPicks, setMyMatchPicks] = useState({}); // { [matchId]: wrestlerName } — per user
+  const [confPreds, setConfPreds] = useState({});    // { [tournId]: { [team]: count } } — aggregate
+  const [myConfPicks, setMyConfPicks] = useState({}); // { [tournId]: teamName } — per user
   const [aiInsights, setAiInsights] = useState([]);
 
   const loadUserPicks = username => {
@@ -503,6 +526,8 @@ export default function App() {
       if (mp) setMyPicks(JSON.parse(mp));
       const mmp = localStorage.getItem(`ms5-mmp-${username}`);
       if (mmp) setMyMatchPicks(JSON.parse(mmp));
+      const mcp = localStorage.getItem(`ms5-mcp-${username}`);
+      if (mcp) setMyConfPicks(JSON.parse(mcp));
     } catch {}
   };
 
@@ -514,6 +539,7 @@ export default function App() {
       const p = localStorage.getItem(SK.p); if (p) setPreds(JSON.parse(p));
       const m = localStorage.getItem(SK.mv); if (m) setMvotes(JSON.parse(m));
       const s = localStorage.getItem(SK.sg); if (s) setSuggested(JSON.parse(s));
+      const cp = localStorage.getItem("ms5-cp"); if (cp) setConfPreds(JSON.parse(cp));
     } catch {}
     setLoading(false);
     // Load AI insights from Supabase (non-blocking)
@@ -526,7 +552,7 @@ export default function App() {
     try { const a = localStorage.getItem(SK.u); if (a) setAllUsers(JSON.parse(a)); } catch {}
     loadUserPicks(u.username);
   };
-  const logout = () => { try { localStorage.removeItem(SK.c); } catch {} setUser(null); setMyPicks({}); setMyMatchPicks({}); };
+  const logout = () => { try { localStorage.removeItem(SK.c); } catch {} setUser(null); setMyPicks({}); setMyMatchPicks({}); setMyConfPicks({}); };
   const votePred = (w, n) => {
     if (!user) return;
     const matchForWc = MATCHES.find(m => m.wt === w && !m.done);
@@ -570,6 +596,28 @@ export default function App() {
     setMvotes(newMvotes); setMyMatchPicks(newMatchPicks);
     try { localStorage.setItem(SK.mv, JSON.stringify(newMvotes)); } catch {}
     try { localStorage.setItem(`ms5-mmp-${user.username}`, JSON.stringify(newMatchPicks)); } catch {}
+  };
+  const voteConf = (tournId, team) => {
+    if (!user) return;
+    const tourn = TOURNAMENTS.find(t => t.id === tournId);
+    if (tourn && new Date() >= tourn.lockDate) return;
+    const newPreds = { ...confPreds }; if (!newPreds[tournId]) newPreds[tournId] = {};
+    const newPicks = { ...myConfPicks };
+    const current = newPicks[tournId];
+    if (current === team) {
+      newPreds[tournId][team] = Math.max(0, (newPreds[tournId][team] || 1) - 1);
+      delete newPicks[tournId];
+    } else if (current) {
+      newPreds[tournId][current] = Math.max(0, (newPreds[tournId][current] || 1) - 1);
+      newPreds[tournId][team] = (newPreds[tournId][team] || 0) + 1;
+      newPicks[tournId] = team;
+    } else {
+      newPreds[tournId][team] = (newPreds[tournId][team] || 0) + 1;
+      newPicks[tournId] = team;
+    }
+    setConfPreds(newPreds); setMyConfPicks(newPicks);
+    try { localStorage.setItem("ms5-cp", JSON.stringify(newPreds)); } catch {}
+    try { localStorage.setItem(`ms5-mcp-${user.username}`, JSON.stringify(newPicks)); } catch {}
   };
   const submitSg = sg => { const u = [sg, ...suggested]; setSuggested(u); try { localStorage.setItem(SK.sg, JSON.stringify(u)); } catch {} };
 
@@ -779,8 +827,56 @@ export default function App() {
               </div>
             );
           })()}
-          <h3 style={{fontFamily:F.d,fontSize:14,letterSpacing:2,color:C.w,marginBottom:10}}>📊 MATCH PREDICTIONS</h3>
-          {upcomingMatches.slice(0, 6).map(m => <MatchCard key={m.id} match={m} user={user} mvotes={mvotes} onVote={voteMatch} myMatchPick={myMatchPicks[m.id]} aiInsight={aiInsights.filter(a => a.weight_class === m.wt)} />)}
+          <h3 style={{fontFamily:F.d,fontSize:14,letterSpacing:2,color:C.w,marginBottom:4}}>🏟️ TOURNAMENT CHAMPION PICKS</h3>
+          <p style={{fontFamily:F.b,fontSize:11,color:C.g3,marginBottom:14}}>Pick the team champion for each conference tournament + NCAA team title</p>
+          <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(300px,1fr))",gap:10,marginBottom:24}}>
+            {TOURNAMENTS.map(tourn => {
+              const locked = new Date() >= tourn.lockDate;
+              const myPick = myConfPicks[tourn.id];
+              const picks = confPreds[tourn.id] || {};
+              const total = Object.values(picks).reduce((a,b) => a+b, 0) || 1;
+              const topTeams = tourn.id === "ncaa"
+                ? TEAM_DATA.slice(0,8).map(t => t.team)
+                : tourn.teams.slice(0, 8);
+              return (
+                <div key={tourn.id} style={{background:C.card,border:`1px solid ${myPick ? C.gold + "40" : C.bdr}`,borderRadius:8,overflow:"hidden"}}>
+                  <div style={{padding:"10px 14px",background:`${C.srf}80`,display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+                    <div>
+                      <span style={{fontFamily:F.d,fontSize:13,letterSpacing:1,color:C.w}}>{tourn.shortName} CHAMPION</span>
+                      <span style={{fontFamily:F.b,fontSize:10,color:C.g3,marginLeft:8}}>{tourn.date}</span>
+                    </div>
+                    {locked
+                      ? <span style={{fontFamily:F.d,fontSize:8,color:C.g3,letterSpacing:1}}>🔒 LOCKED</span>
+                      : tourn.status === "brackets_pending" && <span style={{fontFamily:F.d,fontSize:8,color:C.gold,letterSpacing:1}}>⏳ OPEN</span>}
+                  </div>
+                  <div style={{padding:"8px 10px",display:"grid",gridTemplateColumns:"1fr 1fr",gap:4}}>
+                    {topTeams.map(team => {
+                      const votes = picks[team] || 0;
+                      const pct = (votes / total * 100).toFixed(0);
+                      const isPicked = myPick === team;
+                      return (
+                        <div key={team} onClick={() => !locked && voteConf(tourn.id, team)} style={{background:isPicked ? `${C.gold}12` : C.srf,border:`1px solid ${isPicked ? C.gold : C.bdr}`,borderRadius:4,padding:"6px 8px",cursor:user && !locked ? "pointer" : "default",transition:"all .15s"}}>
+                          <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+                            <span style={{fontFamily:F.b,fontSize:11,color:isPicked ? C.gold : C.g1,fontWeight:isPicked?600:400}}>{team}</span>
+                            <span style={{fontFamily:F.d,fontSize:11,color:isPicked ? C.gold : C.g2}}>{pct}%</span>
+                          </div>
+                          <div style={{marginTop:3,height:2,borderRadius:1,background:C.g4,overflow:"hidden"}}>
+                            <div style={{width:`${pct}%`,height:"100%",background:isPicked ? C.gold : C.blue,transition:"width .3s"}} />
+                          </div>
+                          {isPicked && <div style={{fontFamily:F.b,fontSize:8,color:C.gold,marginTop:2}}>✓ YOUR PICK</div>}
+                        </div>
+                      );
+                    })}
+                  </div>
+                  {!user && <div style={{padding:"6px 14px 10px",fontFamily:F.b,fontSize:10,color:C.gold}}>Sign in to pick a champion</div>}
+                </div>
+              );
+            })}
+          </div>
+          {upcomingMatches.length > 0 && <>
+            <h3 style={{fontFamily:F.d,fontSize:14,letterSpacing:2,color:C.w,marginBottom:10}}>📊 MATCH PREDICTIONS</h3>
+            {upcomingMatches.slice(0, 6).map(m => <MatchCard key={m.id} match={m} user={user} mvotes={mvotes} onVote={voteMatch} myMatchPick={myMatchPicks[m.id]} aiInsight={aiInsights.filter(a => a.weight_class === m.wt)} />)}
+          </>}
         </div>}
 
         {/* ═══ MATCH CENTER ═══ */}
@@ -793,14 +889,46 @@ export default function App() {
           <h3 style={{fontFamily:F.d,fontSize:13,letterSpacing:2,color:C.grn,marginBottom:8}}>✅ RECENT RESULTS</h3>
           {completedMatches.map(m => <MatchCard key={m.id} match={m} user={user} mvotes={mvotes} onVote={voteMatch} myMatchPick={myMatchPicks[m.id]} aiInsight={aiInsights.filter(a => a.weight_class === m.wt)} />)}
 
-          <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginTop:20,marginBottom:10}}>
-            <h3 style={{fontFamily:F.d,fontSize:13,letterSpacing:2,color:C.blueG}}>🔮 UPCOMING</h3>
-            <select value={matchFilter} onChange={e => setMatchFilter(e.target.value)} style={{border:`1px solid ${C.bdr}`,borderRadius:4,padding:"4px 8px",background:C.srf,color:C.g2,fontFamily:F.d,fontSize:10}}>
-              <option value="all">ALL WEIGHTS</option>
-              {WC.map(w => <option key={w} value={w}>{w} LBS</option>)}
-            </select>
+          <h3 style={{fontFamily:F.d,fontSize:13,letterSpacing:2,color:C.blueG,marginTop:20,marginBottom:10}}>🔮 UPCOMING TOURNAMENTS</h3>
+          <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(280px,1fr))",gap:10}}>
+            {TOURNAMENTS.map(tourn => {
+              const isLive = tourn.status === "live" || isEventToday(tourn.date);
+              return (
+                <div key={tourn.id} className="hl" style={{background:`linear-gradient(135deg,${C.card},${C.srf})`,border:`1px solid ${isLive ? C.red + "40" : C.bdr}`,borderRadius:8,overflow:"hidden"}}>
+                  <div style={{padding:"8px 14px",background:`${C.srf}80`,display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+                    <span style={{fontFamily:F.d,fontSize:9,letterSpacing:2,color:C.gold}}>{tourn.date}</span>
+                    {isLive
+                      ? <span className="uglow" style={{fontFamily:F.d,fontSize:7,letterSpacing:1,padding:"1px 6px",borderRadius:2,background:C.red,color:"#fff"}}>🔴 LIVE</span>
+                      : <span style={{fontFamily:F.d,fontSize:7,letterSpacing:1,padding:"1px 6px",borderRadius:2,background:`${C.blue}20`,color:C.blueG}}>UPCOMING</span>}
+                  </div>
+                  <div style={{padding:"12px 14px"}}>
+                    <div style={{fontFamily:F.d,fontSize:17,letterSpacing:1,color:C.w,marginBottom:2}}>{tourn.name.toUpperCase()}</div>
+                    <div style={{fontFamily:F.b,fontSize:11,color:C.g3,marginBottom:10}}>{tourn.location}</div>
+                    {tourn.status === "brackets_pending"
+                      ? <div style={{background:`${C.gold}08`,border:`1px dashed ${C.gold}30`,borderRadius:4,padding:"8px 12px",textAlign:"center"}}>
+                          <div style={{fontFamily:F.d,fontSize:10,color:C.gold,letterSpacing:1}}>⏳ BRACKETS DROPPING SOON</div>
+                          <div style={{fontFamily:F.b,fontSize:10,color:C.g3,marginTop:2}}>Matchups will appear here once brackets are officially released</div>
+                        </div>
+                      : <div style={{fontFamily:F.b,fontSize:11,color:C.grn}}>✅ Brackets live — matchups loading</div>}
+                    {tourn.teams.length > 0 && <div style={{marginTop:8,display:"flex",flexWrap:"wrap",gap:3}}>
+                      {tourn.teams.slice(0,6).map(t => <span key={t} style={{fontFamily:F.b,fontSize:9,color:C.g3,background:C.g4+"40",borderRadius:3,padding:"1px 5px"}}>{t}</span>)}
+                      {tourn.teams.length > 6 && <span style={{fontFamily:F.b,fontSize:9,color:C.g3}}>+{tourn.teams.length-6} more</span>}
+                    </div>}
+                  </div>
+                </div>
+              );
+            })}
           </div>
-          {filteredUpcoming.map(m => <MatchCard key={m.id} match={m} user={user} mvotes={mvotes} onVote={voteMatch} myMatchPick={myMatchPicks[m.id]} aiInsight={aiInsights.filter(a => a.weight_class === m.wt)} />)}
+          {upcomingMatches.length > 0 && <>
+            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginTop:20,marginBottom:10}}>
+              <h3 style={{fontFamily:F.d,fontSize:13,letterSpacing:2,color:C.blueG}}>🔮 BRACKET MATCHUPS</h3>
+              <select value={matchFilter} onChange={e => setMatchFilter(e.target.value)} style={{border:`1px solid ${C.bdr}`,borderRadius:4,padding:"4px 8px",background:C.srf,color:C.g2,fontFamily:F.d,fontSize:10}}>
+                <option value="all">ALL WEIGHTS</option>
+                {WC.map(w => <option key={w} value={w}>{w} LBS</option>)}
+              </select>
+            </div>
+            {filteredUpcoming.map(m => <MatchCard key={m.id} match={m} user={user} mvotes={mvotes} onVote={voteMatch} myMatchPick={myMatchPicks[m.id]} aiInsight={aiInsights.filter(a => a.weight_class === m.wt)} />)}
+          </>}
 
           {suggested.length > 0 && <>
             <h3 style={{fontFamily:F.d,fontSize:13,letterSpacing:2,color:C.accent,marginTop:20,marginBottom:8}}>💡 COMMUNITY SUGGESTED</h3>
